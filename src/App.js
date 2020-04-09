@@ -1,26 +1,42 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { gql } from "apollo-boost";
+import { graphql } from "react-apollo";
+import { ToastContainer, toast } from "react-toastify";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+import CreateNotification from "./components/CreateNotification/CreateNotification";
+import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
+
+class App extends React.Component {
+  componentWillReceiveProps({
+    data: {
+      newNotification: { label },
+    },
+  }) {
+    toast(label);
+  }
+  render() {
+    return (
+      <div className="App">
         <p>
-          Edit <code>src/App.js</code> and save to reload.
+          My realtime notification React App{" "}
+          <span role="img" aria-label="">
+            🚀
+          </span>
         </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+        <CreateNotification />
+        <ToastContainer />
+      </div>
+    );
+  }
 }
 
-export default App;
+const subscriptionNotification = gql`
+  subscription {
+    newNotification {
+      label
+    }
+  }
+`;
+
+export default graphql(subscriptionNotification)(App);
